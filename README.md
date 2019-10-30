@@ -17,26 +17,26 @@ To use this connector you'll need these Xero credentials used for OAuth2 authent
 This connector is very easy to use.
 1. First you'll need to create a connection using the main class XeroSDK.
 ```python
-from xero_db_connector import XeroExtractConnector
+from xero_db_connector.extract import XeroExtractConnector
+import sqlite3
+import logging
+
+logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.DEBUG)
+
+connection = sqlite3.connect("/tmp/xero.db")
 
 config = {
-    'xero_base_url': '<YOUR BASE URL>',
-    'xero_client_id': '<YOUR CLIENT ID>',
-    'xero_client_secret': '<YOUR CLIENT SECRET>',
-    'xero_refresh_token': '<YOUR REFRESH TOKEN>' 
+  'xero_keyfile': 'XXX',
+  'xero_consumer_key': 'XXX'
 }
 
-extract_connector = XeroExtractConnector(
-    config, database_connector
-)
+x = XeroExtractConnector(config=config, connection=connection)
 ```
 2. After that you'll be able to extract data from xero and store it in the db
 ```python
-# Extract Expenses
-extract_connector.extract_expenses()
+# Extract contacts
+x.extract_contacts()
 
-#Extract Employees
-extract_connector.extract_employees()
 ```
 
 ## Contribute
