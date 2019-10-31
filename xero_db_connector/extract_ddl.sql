@@ -16,8 +16,9 @@ CREATE TABLE IF NOT EXISTS "xero_extract_tracking_options" (
 "TrackingOptionID" TEXT,
   "Name" TEXT,
   "Status" TEXT,
-  "TrackingCategoryId" TEXT
+  "TrackingCategoryID" TEXT
 );
+
 CREATE TABLE IF NOT EXISTS "xero_extract_contacts" (
 "ContactID" TEXT,
   "Name" TEXT,
@@ -26,46 +27,33 @@ CREATE TABLE IF NOT EXISTS "xero_extract_contacts" (
   "IsSupplier" INTEGER,
   "IsCustomer" INTEGER
 );
+
 CREATE TABLE IF NOT EXISTS "xero_extract_invoices" (
 "Type" TEXT,
   "InvoiceID" TEXT,
   "InvoiceNumber" TEXT,
   "Reference" TEXT,
-  "AmountDue" REAL,
-  "AmountPaid" REAL,
-  "AmountCredited" REAL,
   "CurrencyRate" REAL,
-  "IsDiscounted" INTEGER,
-  "HasAttachments" INTEGER,
-  "HasErrors" INTEGER,
   "DateString" DATE,
   "Date" TIMESTAMP,
-  "DueDateString" DATE,
-  "DueDate" TIMESTAMP,
-  "BrandingThemeID" TEXT,
   "Status" TEXT,
   "LineAmountTypes" TEXT,
-  "SubTotal" REAL,
-  "TotalTax" REAL,
   "Total" REAL,
   "UpdatedDateUTC" TIMESTAMP,
   "CurrencyCode" TEXT,
-  "ContactID" TEXT,
-  "FullyPaidOnDate" TIMESTAMP,
-  "SentToContact" INTEGER
+  "ContactID" TEXT
 );
+
 CREATE TABLE IF NOT EXISTS "xero_extract_invoice_lineitems" (
-"Description" TEXT,
-  "UnitAmount" REAL,
-  "TaxType" TEXT,
-  "TaxAmount" REAL,
-  "LineAmount" REAL,
-  "AccountCode" TEXT,
-  "Quantity" REAL,
   "LineItemID" TEXT,
   "InvoiceID" TEXT,
-  "ItemCode" TEXT
+  "Description" TEXT,
+  "UnitAmount" REAL,
+  "LineAmount" REAL,
+  "AccountCode" TEXT,
+  "Quantity" REAL
 );
+
 CREATE TABLE IF NOT EXISTS "xero_extract_lineitem_tracking" (
 "Name" TEXT,
   "Option" TEXT,
