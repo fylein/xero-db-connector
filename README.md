@@ -12,10 +12,9 @@ This project requires [Python 3+](https://www.python.org/downloads/).
 
 ## Usage
 
-To use this connector you'll need these Xero credentials.
+To use this connector you'll need Xero credentials - specifically the keyfile and consumer key.
 
-This connector is very easy to use.
-1. First you'll need to create a connection using the main class XeroSDK.
+Here's example usage. Note the detect_types part - this is essential for timestamp to be translated to datetime.datetime type.
 
 ```python
 from xero_db_connector.extract import XeroExtractConnector
@@ -25,8 +24,8 @@ from xero import Xero
 from xero.auth import PrivateCredentials
 
 logging.basicConfig(
-    format='%(asctime)s %(name)s: %(message)s', level=logging.DEBUG)
-dbconn = sqlite3.connect("/tmp/xero.db")
+    format='%(asctime)s %(name)s: %(message)s', level=logging.INFO)
+dbconn = sqlite3.connect("/tmp/xero.db", detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
 xero_keyfile = 'XXX'
 xero_consumer_key = 'XXX'
 with open(xero_keyfile) as keyfile:
