@@ -12,31 +12,30 @@ This project requires [Python 3+](https://www.python.org/downloads/).
 
 ## Usage
 
-To use this connector you'll need these Xero credentials used for OAuth2 authentication: **client ID**, **client secret** and **refresh token**.
+To use this connector you'll need these Xero credentials.
 
 This connector is very easy to use.
 1. First you'll need to create a connection using the main class XeroSDK.
+
 ```python
 from xero_db_connector.extract import XeroExtractConnector
 import sqlite3
 import logging
+from xero import Xero
+from xero.auth import PrivateCredentials
 
-logging.basicConfig(format='%(asctime)s %(name)s: %(message)s', level=logging.DEBUG)
-
-connection = sqlite3.connect("/tmp/xero.db")
-
-config = {
-  'xero_keyfile': 'XXX',
-  'xero_consumer_key': 'XXX'
-}
-
-x = XeroExtractConnector(config=config, connection=connection)
-```
-2. After that you'll be able to extract data from xero and store it in the db
-```python
-# Extract contacts
-x.extract_contacts()
-
+logging.basicConfig(
+    format='%(asctime)s %(name)s: %(message)s', level=logging.DEBUG)
+dbconn = sqlite3.connect("/tmp/xero.db")
+xero_keyfile = 'XXX'
+xero_consumer_key = 'XXX'
+with open(xero_keyfile) as keyfile:
+    rsa_key = keyfile.read()
+credentials = PrivateCredentials(xero_consumer_key, rsa_key)
+xero = Xero(credentials)
+x = XeroExtractConnector(xero=xero, dbconn=dbconn)
+x.create_tables()
+x.extract_invoices()
 ```
 
 ## Contribute
