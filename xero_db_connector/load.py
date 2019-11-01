@@ -55,8 +55,8 @@ class XeroLoadConnector:
         invoice['LineItems'] = lineitems
         logger.info('complete invoice %s', str(invoice))
         r = self.__xero.invoices.save(invoice)[0]
-        logger.info('return object %s', str(r))
+        logger.debug('return object %s', str(r))
         new_invoice_id = r['InvoiceID']
-#        self.__dbconn.cursor().execute('update xero_load_invoices set "InvoiceID"=? where "InvoiceID"=?', (new_invoice_id, invoice_id,))
+        self.__dbconn.cursor().execute('update xero_load_invoices set "InvoiceID"=? where "InvoiceID"=?', (new_invoice_id, invoice_id,))
         return new_invoice_id
 

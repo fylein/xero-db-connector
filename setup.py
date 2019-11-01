@@ -19,10 +19,10 @@ setuptools.setup(
     keywords=['xero', 'db', 'python', 'sdk', 'sqlite', 'postgres'],
     url='https://github.com/fylein/xero-db-connector',
     packages=setuptools.find_packages(),
+    include_package_data=True,
     install_requires=[
-        'typing==3.7.4.1',
         'pandas==0.25.2',
-        'logger==1.4'
+        'pyxero==0.9.1'
     ],
     classifiers=[
         'Topic :: Internet :: WWW/HTTP',

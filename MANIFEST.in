@@ -1,0 +1,1 @@
+include xero_db_connector/*.sql
