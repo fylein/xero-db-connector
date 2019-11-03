@@ -85,13 +85,13 @@ class XeroExtractConnector:
         df_accounts.to_sql('xero_extract_accounts', self.__dbconn, if_exists='append', index=False)
         return df_accounts['AccountID'].to_list()
 
-    def extract_invoices(self) -> List[str]:
+    def extract_invoices(self, page=None) -> List[str]:
         """
         Extract invoicess from Xero
         :return: List of invoice ids
         """
         logger.debug('extracting invoices from Xero')
-        invoices = self.__xero.invoices.all()
+        invoices = self.__xero.invoices.filter(page=page)
         logger.debug('invoices = %s', str(invoices))
         if not invoices:
             return []

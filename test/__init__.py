@@ -37,4 +37,7 @@ dbconn = sqlite3.connect(SQLITE_DB_FILE, detect_types=sqlite3.PARSE_DECLTYPES|sq
 
 # connectors that will be used in tests
 xec = XeroExtractConnector(xero=xero, dbconn=dbconn)
+xec.create_tables()
+
 xlc = XeroLoadConnector(xero=xero, dbconn=dbconn)
+xlc.create_tables()

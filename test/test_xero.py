@@ -39,6 +39,16 @@ def test_xero_connection():
     contacts = xero.contacts.all()
     assert xero.contacts.all(), 'Unable to contact Xero'
 
+def test_tables_exist():
+    assert num_table_rows('xero_extract_accounts') == 0, 'Unclean db'
+    assert num_table_rows('xero_extract_tracking_categories') == 0, 'Unclean db'
+    assert num_table_rows('xero_extract_contacts') == 0, 'Unclean db'
+
+def test_extract_contacts():
+    contact_ids = xec.extract_contacts()
+    assert contact_ids, 'No contacts extracted from xero account'
+    assert num_table_rows('xero_extract_contacts') == len(contact_ids), 'Not all contact ids are in the table'
+
 def test_extract_accounts():
     account_ids = xec.extract_accounts()
     assert account_ids, 'No accounts extracted from xero account'
@@ -50,8 +60,9 @@ def test_extract_tracking_categories():
     assert num_table_rows('xero_extract_tracking_categories') > 0, 'No tracking category rows'
     assert num_table_rows('xero_extract_tracking_options') > 0, 'No tracking options'
 
+# this is a very slow test
 def test_extract_invoices():
-    invoice_ids = xec.extract_invoices()
+    invoice_ids = xec.extract_invoices(page=1)
     assert invoice_ids, 'No invoices extracted'
     assert num_table_rows('xero_extract_invoices') > 0, 'No invoice rows'
     assert num_table_rows('xero_extract_invoice_lineitems') > 0, 'No invoice lineitem rows'
