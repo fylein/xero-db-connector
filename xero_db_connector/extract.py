@@ -75,7 +75,7 @@ class XeroExtractConnector:
         Extract accounts from Xero
         :return: List of account ids
         """
-        logger.info('extracting accounts from Xero')
+        logger.debug('extracting accounts from Xero')
         accounts = self.__xero.accounts.all()
         logger.debug('accounts = %s', str(accounts))
         if not accounts:

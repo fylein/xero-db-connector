@@ -1,7 +1,9 @@
 import os
+import sqlite3
+
 from xero import Xero
 from xero.auth import PrivateCredentials
-import sqlite3
+
 from xero_db_connector.extract import XeroExtractConnector
 from xero_db_connector.load import XeroLoadConnector
 
@@ -28,7 +30,7 @@ credentials = PrivateCredentials(XERO_CONSUMER_KEY, rsa_key)
 xero = Xero(credentials)
 
 # connection to sqlite db - always delete the file if it exists already
-SQLITE_DB_FILE='/tmp/test_xero.db'
+SQLITE_DB_FILE = '/tmp/test_xero.db'
 if os.path.exists(SQLITE_DB_FILE):
     os.remove(SQLITE_DB_FILE)
 dbconn = sqlite3.connect(SQLITE_DB_FILE, detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
