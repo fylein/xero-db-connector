@@ -18,6 +18,7 @@ Here's example usage. Note the detect_types part - this is essential for timesta
 
 ```python
 from xero_db_connector.extract import XeroExtractConnector
+from xero_db_connector.load import XeroLoadConnector
 import sqlite3
 import logging
 from xero import Xero
@@ -34,7 +35,18 @@ credentials = PrivateCredentials(xero_consumer_key, rsa_key)
 xero = Xero(credentials)
 x = XeroExtractConnector(xero=xero, dbconn=dbconn)
 x.create_tables()
-x.extract_invoices()
+y = XeroLoadConnector(xero=xero, dbconn=dbconn)
+y.create_tables()
+
+
+x.extract_contacts()
+x.extract_tracking_categories()
+x.extract_accounts()
+```
+
+# do some magic
+
+y.load_invoice(invoice_id='I1')
 ```
 
 ## Contribute

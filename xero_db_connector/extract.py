@@ -33,7 +33,7 @@ class XeroExtractConnector:
         Extract contacts from Xero
         :return: List of contact ids
         """
-        logger.info('extracting contacts from Xero')
+        logger.debug('extracting contacts from Xero')
         contacts = self.__xero.contacts.all()
         if not contacts:
             return []
@@ -47,9 +47,9 @@ class XeroExtractConnector:
         Extract tracking options from Xero
         :return: List of tracking option ids
         """
-        logger.info('extracting tracking from Xero')
+        logger.debug('extracting tracking from Xero')
         tracking_categories = self.__xero.trackingcategories.all()
-        logger.info('tracking_categories = %s', str(tracking_categories))
+        logger.debug('tracking_categories = %s', str(tracking_categories))
         if not tracking_categories:
             return []
         # tracking categories is a nested structure - so we get two flatted ones and create two tables
@@ -77,7 +77,7 @@ class XeroExtractConnector:
         """
         logger.info('extracting accounts from Xero')
         accounts = self.__xero.accounts.all()
-        logger.info('accounts = %s', str(accounts))
+        logger.debug('accounts = %s', str(accounts))
         if not accounts:
             return []
         df_accounts = pd.DataFrame(accounts)

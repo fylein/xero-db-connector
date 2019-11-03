@@ -1,1 +1,2 @@
 include xero_db_connector/*.sql
+exclude dev

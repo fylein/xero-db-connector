@@ -106,5 +106,4 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-test.py
-dummy_data.sql
+*.pem
