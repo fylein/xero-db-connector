@@ -49,3 +49,10 @@ def test_extract_tracking_categories():
     assert tc, 'No tracking categories in xero account'
     assert num_table_rows('xero_extract_tracking_categories') > 0, 'No tracking category rows'
     assert num_table_rows('xero_extract_tracking_options') > 0, 'No tracking options'
+
+def test_extract_invoices():
+    invoice_ids = xec.extract_invoices()
+    assert invoice_ids, 'No invoices extracted'
+    assert num_table_rows('xero_extract_invoices') > 0, 'No invoice rows'
+    assert num_table_rows('xero_extract_invoice_lineitems') > 0, 'No invoice lineitem rows'
+    assert num_table_rows('xero_extract_lineitem_tracking') > 0, 'No lineitem tracking rows'

@@ -90,9 +90,9 @@ class XeroExtractConnector:
         Extract invoicess from Xero
         :return: List of invoice ids
         """
-        logger.info('extracting invoices from Xero')
+        logger.debug('extracting invoices from Xero')
         invoices = self.__xero.invoices.all()
-        logger.info('invoices = %s', str(invoices))
+        logger.debug('invoices = %s', str(invoices))
         if not invoices:
             return []
         # invoices is a nested structure - so we to denormalize
@@ -107,18 +107,19 @@ class XeroExtractConnector:
             del inv['LineItems']
             inv['ContactID'] = contact_id
             invl.append(inv)
-        
+       
         # temp
-        invl = invl[0:10]
+        # invl = invl[0:10]
 
         # retrieve lineitems by going after individual invoices. lineitems have tracking info that needs
         # to be denormalized as well
         litl = []
         lit_trackl = []
         for inv in invl:
+            # Xero will throttle calls here - so keep a sleep in between
             time.sleep(1)
             inv_detailed = self.__xero.invoices.get(inv['InvoiceID'])[0]
-            logger.info('detailed invoice %s', str(inv_detailed))
+            logger.debug('detailed invoice %s', str(inv_detailed))
             lits = inv_detailed['LineItems']
             for lit in lits:
                 lit['InvoiceID'] = inv['InvoiceID']
