@@ -49,6 +49,22 @@ x.load_invoice(invoice_id='ID1')
 
 ```
 
+## Contribute
+
+To contribute to this project follow the steps
+
+* Fork and clone the repository.
+* Run `pip install -r requirements.txt`
+* Setup pylint precommit hook
+    * Create a file `.git/hooks/pre-commit`
+    * Copy and paste the following lines in the file - 
+        ```bash
+        #!/usr/bin/env bash 
+        git-pylint-commit-hook
+        ```
+* Make necessary changes
+* Run unit tests to ensure everything is fine
+
 ## Unit Tests
 
 To run unit tests, run pytest in the following manner:
@@ -105,19 +121,6 @@ TOTAL                             142     86    39%
 ============================================================== 3 passed, 1 warnings in 5.08s ===============================================================
 ```
 
-## Contribute
-
-To contribute to this project follow the steps
-
-* Fork and clone the repository.
-* Run `pip install -r requirements.txt`
-* Setup pylint precommit hook
-    * Create a file `.git/hooks/pre-commit`
-    * Copy and paste the following lines in the file - 
-        ```bash
-        #!/usr/bin/env bash 
-        git-pylint-commit-hook
-        ```
 
 
 ## License
