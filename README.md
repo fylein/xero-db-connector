@@ -16,7 +16,6 @@ To use this connector you'll need Xero credentials - specifically the keyfile an
 
 Here's example usage. Note the detect_types part - this is essential for timestamp to be translated to datetime.datetime type.
 
-
 ```python
 from xero_db_connector.extract import XeroExtractConnector
 from xero_db_connector.load import XeroLoadConnector
@@ -50,36 +49,47 @@ x.load_invoice(invoice_id='ID1')
 
 ```
 
-## Tests
+## Unit Tests
 
-To run unit tests, set the following two environment variables which will allow connection to a Xero account, preferably the demo account.
+To run unit tests, run pytest in the following manner:
+
+```
+python -m pytest test/unit
+```
+
+You should see something like this:
+```
+================================================================== test session starts ==================================================================
+platform darwin -- Python 3.7.4, pytest-5.2.2, py-1.8.0, pluggy-0.13.0
+rootdir: /Users/siva/src/xero-db-connector, inifile: pytest.ini
+plugins: mock-1.11.2, cov-2.8.1
+collected 3 items                                                                                                                                       
+
+test/unit/test_mocks.py::test_xero_mock_setup PASSED                                                                                              [ 33%]
+test/unit/test_mocks.py::test_dbconn_mock_setup PASSED                                                                                            [ 66%]
+test/unit/test_mocks.py::test_xec_mock_setup PASSED                                                                                               [100%]
+
+=================================================================== 3 passed in 0.10s ===================================================================
+
+```
+
+## Integration Tests
+
+To run unit tests, you will need a mechanism to connect to a real Xero account. Specifically, you'll need a keyfile and a consumer key, both of which can be obtained from the xero developer portal. Set the following environment variables before running the integration tests:
 
 ```
 export XERO_PRIVATE_KEYFILE=<path_to_keyfile>
 export XERO_CONSUMER_KEY=<string>
+
+python -m pytest test/integration
 ```
 
-Then run pytest and you should see something like this.
-
-```python
-(venv) siva-laptop-2:xero-db-connector siva$ pytest
-
-=================================================================== test session starts ====================================================================
-platform darwin -- Python 3.7.4, pytest-5.2.2, py-1.8.0, pluggy-0.13.0
-rootdir: /Users/siva/src/xero-db-connector, inifile: pytest.ini
-plugins: cov-2.8.1
-collected 3 items                                                                                                                                          
-
-test/test_xero.py::test_xero_connection PASSED                                                                                                       [ 33%]
-test/test_xero.py::test_extract_accounts PASSED                                                                                                      [ 66%]
-test/test_xero.py::test_extract_tracking_categories PASSED                                                                                           [100%]
-
-```
+## Code coverage
 
 To get code coverage report, run this command:
 
 ```python
-(venv) siva-laptop-2:xero-db-connector siva$ pytest --cov=xero_db_connector
+(venv) siva-laptop-2:xero-db-connector siva$ python -m pytest --cov=xero_db_connector
 
 <snipped output>
 
