@@ -22,10 +22,21 @@ def dbconn():
     SQLITE_DB_FILE = '/tmp/test_xero.db'
     if os.path.exists(SQLITE_DB_FILE):
         os.remove(SQLITE_DB_FILE)
-    return sqlite3.connect(SQLITE_DB_FILE, detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
+    conn = sqlite3.connect(SQLITE_DB_FILE)
+    return conn
 
 @pytest.fixture
 def xec(xero, dbconn):
     res = XeroExtractConnector(xero=xero, dbconn=dbconn)
     res.create_tables()
+    return res
+
+@pytest.fixture
+def xel(xero, dbconn):
+    res = XeroLoadConnector(xero=xero, dbconn=dbconn)
+    res.create_tables()
+    basepath = path.dirname(__file__)
+    sqlpath = path.join(basepath, '../common/mock_db_load.sql')
+    sql = open(sqlpath, 'r').read()
+    dbconn.executescript(sql)
     return res

@@ -108,7 +108,7 @@ python -m pytest test/integration
 To get code coverage report, run this command:
 
 ```python
-(venv) siva-laptop-2:xero-db-connector siva$ python -m pytest --cov=xero_db_connector
+python -m pytest --cov=xero_db_connector
 
 <snipped output>
 
@@ -116,15 +116,19 @@ To get code coverage report, run this command:
 Name                            Stmts   Miss  Cover
 ---------------------------------------------------
 xero_db_connector/__init__.py       0      0   100%
-xero_db_connector/extract.py      100     57    43%
-xero_db_connector/load.py          42     29    31%
+xero_db_connector/extract.py      106      0   100%
+xero_db_connector/load.py          42     32    24%
 ---------------------------------------------------
-TOTAL                             142     86    39%
-
-============================================================== 3 passed, 1 warnings in 5.08s ===============================================================
+TOTAL                             148     32    78%
 ```
 
+To get an html report, run this command:
 
+```python
+python -m pytest --cov=xero_db_connector --cov-report html:cov_html
+```
+
+We want to maintain code coverage of more than 95% for this project at all times.
 
 ## License
 
