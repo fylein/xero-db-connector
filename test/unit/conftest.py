@@ -1,11 +1,13 @@
-import pytest
-
-import sqlite3
+import json
 import logging
 import os
+import sqlite3
 from os import path
-import json
 from unittest.mock import Mock
+
+import pytest
+
+from common.utilities import get_mock_xero_dict
 from xero_db_connector.extract import XeroExtractConnector
 from xero_db_connector.load import XeroLoadConnector
 
@@ -13,10 +15,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.fixture
 def xero():
-    basepath = path.dirname(__file__)
-    filepath = path.join(basepath, 'mock_xero.json')
-    mock_xero_json = open(filepath, 'r').read()
-    mock_xero_dict = json.loads(mock_xero_json)
+    mock_xero_dict = get_mock_xero_dict()
     mock_xero = Mock()
     mock_xero.contacts.all.return_value = mock_xero_dict['contacts']
     mock_xero.trackingcategories.all.return_value = mock_xero_dict['trackingcategories']

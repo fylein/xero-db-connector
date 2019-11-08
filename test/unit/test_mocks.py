@@ -5,7 +5,7 @@ import logging
 from os import path
 import json
 from unittest.mock import Mock
-
+from common.utilities import dict_compare_keys
 
 logger = logging.getLogger(__name__)
 
@@ -31,4 +31,15 @@ def test_xec_mock_setup(xec):
     assert num_table_rows(dbconn, 'xero_extract_tracking_categories') == 0, 'Unclean db'
     assert num_table_rows(dbconn, 'xero_extract_contacts') == 0, 'Unclean db'
 
-
+def test_dict_compare():
+    d1 = {
+        'k1' : 'xxx', 'k2' : 2, 'k3' : [1, 2], 'k4' : { 'k41' : [2], 'k42' : { 'k421' : 20}}
+    }
+    d2 = {
+        'k1' : 'xyx', 'k3' : [1, 2], 'k4' : { 'k42' : { 'k421' : 20}}
+    }
+    d3 = {
+        'k1' : 'xyz', 'k3' : [3, 2], 'k4' : { 'k42' : { 'k421' : 40}}
+    }
+    assert dict_compare_keys(d1, d2) == ['->k2', '->k4->k41'], 'not identifying diff properly'
+    assert dict_compare_keys(d2, d3) == [], 'should return no diff'

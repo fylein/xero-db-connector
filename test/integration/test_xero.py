@@ -1,33 +1,42 @@
 import pytest
 import logging
+from common.utilities import dict_compare_keys
 
 logger = logging.getLogger(__name__)
 
-def test_connection(xero):
+def test_contacts(xero, mock_xero):
     contacts = xero.contacts.all()
-    logger.info('got %d contacts', len(contacts))
-    assert xero.contacts.all(), 'Unable to contact Xero'
+    mock_contacts = mock_xero.contacts.all()
 
-# def test_contacts(mocker):
-#     ['ContactID', 'Name', 'ContactStatus', 'EmailAddress', 'IsSupplier', 'IsCustomer']
+    assert dict_compare_keys(contacts[0], mock_contacts[0]) == [], 'xero.contacts.all() has stuff that mock_xero doesnt'
+    assert dict_compare_keys(mock_contacts[0], contacts[0]) == [], 'mock_xero.contacts.all() has stuff that xero doesnt'
 
-#     pass
+def test_accounts(xero, mock_xero):
+    accounts = xero.accounts.all()
+    mock_accounts = mock_xero.accounts.all()
 
-# def test_tracking_categories(mocker):
-#     ['TrackingCategoryID', 'Name', 'Status']
+    assert dict_compare_keys(accounts[0], mock_accounts[0]) == [], 'xero.accounts.all() has stuff that mock_xero doesnt'
+    assert dict_compare_keys(mock_accounts[0], accounts[0]) == [], 'mock_xero.accounts.all() has stuff that xero doesnt'
 
-#     pass
+def test_trackingcategories(xero, mock_xero):
+    trackingcategories = xero.trackingcategories.all()
+    mock_trackingcategories = mock_xero.trackingcategories.all()
 
+    assert dict_compare_keys(trackingcategories[0], mock_trackingcategories[0]) == [], 'xero.trackingcategories.all() has stuff that mock_xero doesnt'
+    assert dict_compare_keys(mock_trackingcategories[0], trackingcategories[0]) == [], 'mock_xero.accounts.all() has stuff that xero doesnt'
 
-# def num_table_rows(tablename):
-#     query = f'select count(*) from {tablename}'
-#     return dbconn.cursor().execute(query).fetchone()[0]
+def test_invoices(xero, mock_xero):
+    invoices = xero.invoices.all()
+    mock_invoices = mock_xero.invoices.all()
 
+    assert dict_compare_keys(invoices[0], mock_invoices[0]) == [], 'xero.invoices.all() has stuff that mock_xero doesnt'
+    assert dict_compare_keys(mock_invoices[0], invoices[0]) == [], 'mock_xero.accounts.all() has stuff that xero doesnt'
 
-# def test_tables_exist():
-#     assert num_table_rows('xero_extract_accounts') == 0, 'Unclean db'
-#     assert num_table_rows('xero_extract_tracking_categories') == 0, 'Unclean db'
-#     assert num_table_rows('xero_extract_contacts') == 0, 'Unclean db'
+    invoices = xero.invoices.get(invoices[0]['InvoiceID'])
+    mock_invoices = mock_xero.invoices.get('foo')
+
+    assert dict_compare_keys(invoices[0], mock_invoices[0]) == [], 'xero.invoices.get() has stuff that mock_xero doesnt'
+    assert dict_compare_keys(mock_invoices[0], invoices[0]) == [], 'mock_xero.accounts.get() has stuff that xero doesnt'
 
 # def test_extract_contacts():
 #     contact_ids = xec.extract_contacts()

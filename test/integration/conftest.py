@@ -1,18 +1,33 @@
-import pytest
-
-import sqlite3
+import json
 import logging
 import os
+import sqlite3
 from os import path
-import json
+from unittest.mock import Mock
+
+import pytest
 from xero import Xero
 from xero.auth import PrivateCredentials
+
+from common.utilities import get_mock_xero_dict
 from xero_db_connector.extract import XeroExtractConnector
 from xero_db_connector.load import XeroLoadConnector
 
 logger = logging.getLogger(__name__)
 
 @pytest.fixture
+def mock_xero():
+    mock_xero_dict = get_mock_xero_dict()
+    mock_xero = Mock()
+    mock_xero.contacts.all.return_value = mock_xero_dict['contacts']
+    mock_xero.trackingcategories.all.return_value = mock_xero_dict['trackingcategories']
+    mock_xero.invoices.all.return_value = mock_xero_dict['invoices_all']
+    mock_xero.invoices.filter.return_value = mock_xero_dict['invoices_all']
+    mock_xero.invoices.get.return_value = mock_xero_dict['invoices_get']
+    mock_xero.accounts.all.return_value = mock_xero_dict['accounts']
+    return mock_xero
+
+@pytest.fixture(scope='module')
 def xero():
     XERO_PRIVATE_KEYFILE = os.environ.get('XERO_PRIVATE_KEYFILE', None)
     XERO_CONSUMER_KEY = os.environ.get('XERO_CONSUMER_KEY', None)
