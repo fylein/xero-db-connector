@@ -14,7 +14,7 @@ This project requires [Python 3+](https://www.python.org/downloads/).
 
 To use this connector you'll need Xero credentials - specifically the keyfile and consumer key. 
 
-Here's example usage. Note the detect_types part - this is essential for timestamp to be translated to datetime.datetime type.
+Here's example usage. 
 
 ```python
 from xero_db_connector.extract import XeroExtractConnector
@@ -27,30 +27,22 @@ from xero.auth import PrivateCredentials
 def xero_connect():
     XERO_PRIVATE_KEYFILE = os.environ.get('XERO_PRIVATE_KEYFILE', None)
     XERO_CONSUMER_KEY = os.environ.get('XERO_CONSUMER_KEY', None)
-
     if XERO_PRIVATE_KEYFILE is None:
         raise Exception('XERO_PRIVATE_KEYFILE is not set')
-
     if XERO_CONSUMER_KEY is None:
         raise Exception('XERO_CONSUMER_KEY is not set')
-
     with open(XERO_PRIVATE_KEYFILE) as keyfile:
         rsa_key = keyfile.read()
-
     credentials = PrivateCredentials(XERO_CONSUMER_KEY, rsa_key)
     # used to connect to xero
     return Xero(credentials)
 
-logging.basicConfig(
-    format='%(asctime)s %(name)s: %(message)s', level=logging.INFO)
-dbconn = sqlite3.connect("/tmp/xero.db", detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
+dbconn = sqlite3.connect('/tmp/xero.db')
 xero = xero_connect()
 x = XeroExtractConnector(xero=xero, dbconn=dbconn)
 x.create_tables()
 y = XeroLoadConnector(xero=xero, dbconn=dbconn)
 y.create_tables()
-
-
 x.extract_contacts()
 x.extract_tracking_categories()
 x.extract_accounts()
@@ -58,7 +50,6 @@ x.extract_accounts()
 # do some transformations and populated invoice tables xero_load_invoices and xero_load_invoice_lineitems
 
 x.load_invoice(invoice_id='ID1')
-
 ```
 
 ## Contribute

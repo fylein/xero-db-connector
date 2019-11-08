@@ -1,11 +1,10 @@
 import json
 import logging
 import os
-import sqlite3
 from os import path
 from unittest.mock import Mock
-
-import pytest
+from xero import Xero
+from xero.auth import PrivateCredentials
 
 logger = logging.getLogger(__name__)
 
@@ -69,3 +68,16 @@ def dbconn_table_row_dict(dbconn, tablename):
     query = f'select * from {tablename} limit 1'
     row = dbconn.cursor().execute(query).fetchone()
     return dict(row)
+
+def xero_connect():
+    XERO_PRIVATE_KEYFILE = os.environ.get('XERO_PRIVATE_KEYFILE', None)
+    XERO_CONSUMER_KEY = os.environ.get('XERO_CONSUMER_KEY', None)
+    if XERO_PRIVATE_KEYFILE is None:
+        raise Exception('XERO_PRIVATE_KEYFILE is not set')
+    if XERO_CONSUMER_KEY is None:
+        raise Exception('XERO_CONSUMER_KEY is not set')
+    with open(XERO_PRIVATE_KEYFILE) as keyfile:
+        rsa_key = keyfile.read()
+    credentials = PrivateCredentials(XERO_CONSUMER_KEY, rsa_key)
+    # used to connect to xero
+    return Xero(credentials)

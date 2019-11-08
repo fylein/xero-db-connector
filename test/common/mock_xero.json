@@ -3347,7 +3347,7 @@
           "Quantity": 1.0,
           "TaxAmount": 4.54,
           "TaxType": "INPUT",
-          "Tracking": [],
+          "Tracking": [{"Name": "Region", "Option": "Eastside", "TrackingCategoryID": "fa437cfd-f005-4538-ae84-943857da5c8c", "TrackingOptionID": "7b354c1c-cf59-42fc-9449-a65c51988335"}],
           "UnitAmount": 55.0,
           "ValidationErrors": []
         }
