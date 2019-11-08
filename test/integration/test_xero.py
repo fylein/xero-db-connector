@@ -25,7 +25,7 @@ def test_trackingcategories(xero, mock_xero):
     assert dict_compare_keys(trackingcategories[0], mock_trackingcategories[0]) == [], 'xero.trackingcategories.all() has stuff that mock_xero doesnt'
     assert dict_compare_keys(mock_trackingcategories[0], trackingcategories[0]) == [], 'mock_xero.accounts.all() has stuff that xero doesnt'
 
-def test_invoices(xero, mock_xero):
+def test_invoices_all(xero, mock_xero):
     invoices = xero.invoices.all()
     mock_invoices = mock_xero.invoices.all()
 
@@ -39,4 +39,4 @@ def test_invoices(xero, mock_xero):
     assert dict_compare_keys(invoices[0], mock_invoices[0]) == [], 'xero.invoices.get() has stuff that mock_xero doesnt'
 # Temporarily commenting this out because sometimes xero invoices have currency rate but sometimes they dont
 #    assert dict_compare_keys(mock_invoices[0], invoices[0]) == [], 'mock_xero.accounts.get() has stuff that xero doesnt'
-
+    
