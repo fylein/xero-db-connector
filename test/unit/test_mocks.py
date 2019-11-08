@@ -5,15 +5,9 @@ import logging
 from os import path
 import json
 from unittest.mock import Mock
-from common.utilities import dict_compare_keys
+from common.utilities import dict_compare_keys, num_table_rows
 
 logger = logging.getLogger(__name__)
-
-def num_table_rows(dbconn, tablename):
-    ''' Helper function to calculate number of rows
-    '''
-    query = f'select count(*) from {tablename}'
-    return dbconn.cursor().execute(query).fetchone()[0]
 
 def test_xero_mock_setup(xero):
     assert xero.invoices.get('232')[0]['InvoiceID'] == '9f5bca33-8590-4b6f-acfb-e85712b10217', 'xero mock setup is broken'

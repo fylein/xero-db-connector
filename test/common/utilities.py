@@ -1,10 +1,11 @@
-import pytest
-
-import sqlite3
+import json
 import logging
 import os
+import sqlite3
 from os import path
-import json
+from unittest.mock import Mock
+
+import pytest
 
 logger = logging.getLogger(__name__)
 
@@ -15,32 +16,45 @@ def get_mock_xero_dict():
     mock_xero_dict = json.loads(mock_xero_json)
     return mock_xero_dict
 
+def get_mock_xero():
+    mock_xero_dict = get_mock_xero_dict()
+    mock_xero = Mock()
+    mock_xero.contacts.all.return_value = mock_xero_dict['contacts']
+    mock_xero.trackingcategories.all.return_value = mock_xero_dict['trackingcategories']
+    mock_xero.invoices.all.return_value = mock_xero_dict['invoices_all']
+    mock_xero.invoices.filter.return_value = mock_xero_dict['invoices_all']
+    mock_xero.invoices.get.return_value = mock_xero_dict['invoices_get']
+    mock_xero.accounts.all.return_value = mock_xero_dict['accounts']
+    return mock_xero
+
 def dict_compare_keys(d1, d2, key_path=''):
     ''' Compare two dicts recursively and see if dict1 has any keys that dict2 does not
     Returns: list of key paths
     '''
-#    logger.info('args d1=%s, d2=%s, key_path=%s', d1, d2, key_path)
     res = []
+    if not d1:
+        return res
+    if not isinstance(d1, dict):
+        return res
     for k in d1:
-#        logger.info('enter: processing key=%s, res=%s', k, res)
         if k not in d2:
             missing_key_path = f'{key_path}->{k}'
-#            logger.info('missing_key_path=%s', missing_key_path)
             res.append(missing_key_path)
-#            logger.info('res=%s', res)
-        elif isinstance(d1[k], dict):
-            key_path = f'{key_path}->{k}'
-#                logger.info('pre res=%s', str(res))
-            res1 = dict_compare_keys(d1[k], d2[k], key_path)
-#                logger.info('post res=%s, res1=%s', str(res), str(res1))
-            res = res + res1
-        elif isinstance(d1[k], list):
-            key_path = f'{key_path}->[0]'
-            dv1 = d1[k][0] if len(d1[k]) > 0 else {}
-            dv2 = d2[k][0] if len(d2[k]) > 0 else {}
-#                logger.info('pre res=%s', str(res))
-            res1 = dict_compare_keys(dv1, dv2, key_path)
-#                logger.info('post res=%s, res1=%s', str(res), str(res1))
-            res = res + res1
-#        logger.info('exit: processing key=%s, res=%s', k, res)
+        else:
+            if isinstance(d1[k], dict):
+                key_path = f'{key_path}->{k}'
+                res1 = dict_compare_keys(d1[k], d2[k], key_path)
+                res = res + res1
+            elif isinstance(d1[k], list):
+                key_path1 = f'{key_path}->{k}[0]'
+                dv1 = d1[k][0] if len(d1[k]) > 0 else None
+                dv2 = d2[k][0] if len(d2[k]) > 0 else None
+                res1 = dict_compare_keys(dv1, dv2, key_path1)
+                res = res + res1
     return res
+
+def num_table_rows(dbconn, tablename):
+    ''' Helper function to calculate number of rows
+    '''
+    query = f'select count(*) from {tablename}'
+    return dbconn.cursor().execute(query).fetchone()[0]
