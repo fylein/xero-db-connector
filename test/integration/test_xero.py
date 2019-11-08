@@ -30,6 +30,7 @@ def test_invoices(xero, mock_xero):
     mock_invoices = mock_xero.invoices.all()
 
     assert dict_compare_keys(invoices[0], mock_invoices[0]) == [], 'xero.invoices.all() has stuff that mock_xero doesnt'
+# Temporarily commenting this out because sometimes xero invoices have currency rate but sometimes they dont
 #    assert dict_compare_keys(mock_invoices[0], invoices[0]) == [], 'mock_xero.accounts.all() has stuff that xero doesnt'
 
     invoices = xero.invoices.get(invoices[0]['InvoiceID'])
