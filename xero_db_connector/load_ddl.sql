@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS "xero_load_invoices" (
   "InvoiceID" TEXT,
   "InvoiceNumber" TEXT,
   "CurrencyRate" REAL,
-  "Date" TEXT, -- format: YYYY-MM-DD e.g. 2019-01-01
+  "Date" DATE, -- YYYY-MM-DD e.g. 2019-01-01
   "Status" TEXT,
   "Total" REAL,
   "CurrencyCode" TEXT,

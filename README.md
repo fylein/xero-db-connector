@@ -21,6 +21,7 @@ from xero_db_connector.extract import XeroExtractConnector
 from xero_db_connector.load import XeroLoadConnector
 import sqlite3
 import logging
+import os
 from xero import Xero
 from xero.auth import PrivateCredentials
 
@@ -37,19 +38,21 @@ def xero_connect():
     # used to connect to xero
     return Xero(credentials)
 
-dbconn = sqlite3.connect('/tmp/xero.db')
+dbconn = sqlite3.connect('/tmp/xero.db', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
 xero = xero_connect()
 x = XeroExtractConnector(xero=xero, dbconn=dbconn)
 x.create_tables()
 y = XeroLoadConnector(xero=xero, dbconn=dbconn)
 y.create_tables()
+
+
 x.extract_contacts()
 x.extract_tracking_categories()
 x.extract_accounts()
 
 # do some transformations and populated invoice tables xero_load_invoices and xero_load_invoice_lineitems
-
-x.load_invoice(invoice_id='ID1')
+for invoice_id in y.load_invoices_generator():
+    print(f'posted invoice {invoice_id}')
 ```
 
 ## Contribute

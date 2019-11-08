@@ -58,8 +58,8 @@ def test_datetime(xec):
     dbconn = xec._XeroExtractConnector__dbconn
     xec.extract_invoices()
     invoice = dbconn_table_row_dict(dbconn, 'xero_extract_invoices')
-    assert invoice['Date'] == '2019-10-09 00:00:00'
-    assert invoice['UpdatedDateUTC'] == '2008-12-20 16:40:33'
+    assert invoice['Date'].isoformat() == '2019-10-09T00:00:00'
+    assert invoice['UpdatedDateUTC'].isoformat() == '2008-12-20T16:40:33'
 
 def test_empty(dbconn):
     xero = get_mock_xero_empty()

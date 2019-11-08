@@ -19,7 +19,7 @@ def test_load_invoice_generator(xlc):
     invoice_ids = list(xlc.load_invoices_generator())
     xero.invoices.save.assert_called()
     invoice_posted = xero.invoices.save.call_args[0][0]
-    assert invoice_posted['Date'] == '2019-10-01 00:00:00'
+    assert invoice_posted['Date'].isoformat() == '2019-10-01'
     assert len(invoice_posted['LineItems']) == 2
     assert len(invoice_posted['LineItems'][0]['Tracking']) == 1
     assert invoice_ids == ['I1', 'I2'], 'invoice ids are incorrect'

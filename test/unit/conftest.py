@@ -22,7 +22,7 @@ def dbconn():
     SQLITE_DB_FILE = '/tmp/test_xero.db'
     if os.path.exists(SQLITE_DB_FILE):
         os.remove(SQLITE_DB_FILE)
-    conn = sqlite3.connect(SQLITE_DB_FILE)
+    conn = sqlite3.connect(SQLITE_DB_FILE, detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
     return conn
 
 @pytest.fixture

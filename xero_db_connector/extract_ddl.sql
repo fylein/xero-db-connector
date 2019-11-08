@@ -33,12 +33,11 @@ CREATE TABLE IF NOT EXISTS "xero_extract_invoices" (
   "InvoiceNumber" TEXT,
   "Reference" TEXT,
   "CurrencyRate" REAL,
-  "DateString" TEXT,
-  "Date" TEXT,
+  "Date" TIMESTAMP,
   "Status" TEXT,
   "LineAmountTypes" TEXT,
   "Total" REAL,
-  "UpdatedDateUTC" TEXT,
+  "UpdatedDateUTC" TIMESTAMP,
   "CurrencyCode" TEXT,
   "ContactID" TEXT
 );

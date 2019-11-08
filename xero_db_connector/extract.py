@@ -136,7 +136,7 @@ class XeroExtractConnector:
         invoice_ids = []
         if invl:
             df_invl = pd.DataFrame(invl)
-            df_invl = df_invl[['Type', 'InvoiceID', 'InvoiceNumber', 'Reference', 'CurrencyRate', 'DateString', 'Date', 'Status', 'LineAmountTypes', 'Total', 'UpdatedDateUTC', 'CurrencyCode', 'ContactID']]
+            df_invl = df_invl[['Type', 'InvoiceID', 'InvoiceNumber', 'Reference', 'CurrencyRate', 'Date', 'Status', 'LineAmountTypes', 'Total', 'UpdatedDateUTC', 'CurrencyCode', 'ContactID']]
             df_invl.to_sql('xero_extract_invoices', self.__dbconn, if_exists='append', index=False)
             invoice_ids = df_invl['InvoiceID'].to_list()
 
