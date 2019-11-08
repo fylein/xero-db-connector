@@ -12,11 +12,18 @@ CREATE TABLE IF NOT EXISTS "xero_load_invoices" (
   "ContactID" TEXT
 );
 
+DROP TABLE IF EXISTS "xero_load_invoices_mapping";
+
+CREATE TABLE IF NOT EXISTS "xero_load_invoices_mapping" (
+  "InvoiceID" TEXT,
+  "XeroInvoiceID" TEXT -- this is what is returned by Xero
+);
+
 DROP TABLE IF EXISTS "xero_load_invoice_lineitems";
 
 CREATE TABLE IF NOT EXISTS "xero_load_invoice_lineitems" (
-  "LineItemID" TEXT,
-  "InvoiceID" TEXT,
+  "InvoiceID" TEXT, -- internal use only. Not sent to Xero
+  "LineItemID" TEXT, -- internal use only. Not sent to Xero
   "Description" TEXT,
   "UnitAmount" REAL,
   "LineAmount" REAL,
@@ -30,5 +37,5 @@ DROP TABLE IF EXISTS "xero_load_lineitem_tracking";
 CREATE TABLE IF NOT EXISTS "xero_load_lineitem_tracking" (
   "Name" TEXT,
   "Option" TEXT,
-  "LineItemID" TEXT
+  "LineItemID" TEXT -- internal use only. Not sent to Xero
 );

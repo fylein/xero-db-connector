@@ -32,7 +32,7 @@ def xec(xero, dbconn):
     return res
 
 @pytest.fixture
-def xel(xero, dbconn):
+def xlc(xero, dbconn):
     res = XeroLoadConnector(xero=xero, dbconn=dbconn)
     res.create_tables()
     basepath = path.dirname(__file__)

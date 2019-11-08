@@ -1,8 +1,10 @@
+import copy
 import json
 import logging
 import os
 from os import path
 from unittest.mock import Mock
+
 from xero import Xero
 from xero.auth import PrivateCredentials
 
@@ -24,6 +26,8 @@ def get_mock_xero_from_file(filename):
     mock_xero.invoices.filter.return_value = mock_xero_dict['invoices_all']
     mock_xero.invoices.get.return_value = mock_xero_dict['invoices_get']
     mock_xero.accounts.all.return_value = mock_xero_dict['accounts']
+
+    mock_xero.invoices.save.return_value = copy.deepcopy(mock_xero_dict['invoices_get'][0:1])
     return mock_xero
 
 def get_mock_xero():

@@ -112,14 +112,13 @@ python -m pytest --cov=xero_db_connector
 
 <snipped output>
 
----------- coverage: platform darwin, python 3.7.4-final-0 -----------
 Name                            Stmts   Miss  Cover
 ---------------------------------------------------
 xero_db_connector/__init__.py       0      0   100%
 xero_db_connector/extract.py      106      0   100%
-xero_db_connector/load.py          42     32    24%
+xero_db_connector/load.py          52      0   100%
 ---------------------------------------------------
-TOTAL                             148     32    78%
+TOTAL                             158      0   100%
 ```
 
 To get an html report, run this command:

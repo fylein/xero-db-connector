@@ -38,8 +38,7 @@ def test_dict_compare():
     assert dict_compare_keys(d1, d2) == ['->k2', '->k4->k41'], 'not identifying diff properly'
     assert dict_compare_keys(d2, d3) == [], 'should return no diff'
 
-def test_xel_mock_setup(xel):
-    logger.info('xel test')
-    dbconn = xel._XeroLoadConnector__dbconn
+def test_xlc_mock_setup(xlc):
+    dbconn = xlc._XeroLoadConnector__dbconn
     assert dbconn_table_num_rows(dbconn, 'xero_load_invoices') == 2, 'Unclean db'
     assert dbconn_table_num_rows(dbconn, 'xero_load_invoice_lineitems') == 4, 'Unclean db'
