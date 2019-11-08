@@ -52,7 +52,8 @@ x.extract_accounts()
 
 # do some transformations and populated invoice tables xero_load_invoices and xero_load_invoice_lineitems
 for invoice_id in y.load_invoices_generator():
-    print(f'posted invoice {invoice_id}')
+    xero_invoice_id = y.get_xero_invoice_id(invoice_id=invoice_id)
+    print(f'posted invoice {invoice_id} for which xero returned {xero_invoice_id}')
 ```
 
 ## Contribute
