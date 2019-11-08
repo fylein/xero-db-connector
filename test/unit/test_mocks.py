@@ -5,7 +5,7 @@ import logging
 from os import path
 import json
 from unittest.mock import Mock
-from common.utilities import dict_compare_keys, num_table_rows
+from common.utilities import dict_compare_keys, dbconn_table_num_rows
 
 logger = logging.getLogger(__name__)
 
@@ -16,14 +16,14 @@ def test_xero_mock_setup(xero):
 
 def test_dbconn_mock_setup(dbconn):
     with pytest.raises(sqlite3.OperationalError) as e:
-        rows = num_table_rows(dbconn, 'xero_extract_accounts')
+        rows = dbconn_table_num_rows(dbconn, 'xero_extract_accounts')
 
 def test_xec_mock_setup(xec):
     # python magic to access private variable for testing db state
     dbconn = xec._XeroExtractConnector__dbconn
-    assert num_table_rows(dbconn, 'xero_extract_accounts') == 0, 'Unclean db'
-    assert num_table_rows(dbconn, 'xero_extract_tracking_categories') == 0, 'Unclean db'
-    assert num_table_rows(dbconn, 'xero_extract_contacts') == 0, 'Unclean db'
+    assert dbconn_table_num_rows(dbconn, 'xero_extract_accounts') == 0, 'Unclean db'
+    assert dbconn_table_num_rows(dbconn, 'xero_extract_trackingcategories') == 0, 'Unclean db'
+    assert dbconn_table_num_rows(dbconn, 'xero_extract_contacts') == 0, 'Unclean db'
 
 def test_dict_compare():
     d1 = {

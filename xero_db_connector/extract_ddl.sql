@@ -6,14 +6,14 @@ DROP TABLE IF EXISTS "xero_extract_invoice_lineitems";
 DROP TABLE IF EXISTS "xero_extract_lineitem_tracking";
 DROP TABLE IF EXISTS "xero_extract_accounts";
 
-CREATE TABLE IF NOT EXISTS "xero_extract_tracking_categories" (
-"Name" TEXT,
+CREATE TABLE IF NOT EXISTS "xero_extract_trackingcategories" (
+  "Name" TEXT,
   "Status" TEXT,
   "TrackingCategoryID" TEXT
 );
 
-CREATE TABLE IF NOT EXISTS "xero_extract_tracking_options" (
-"TrackingOptionID" TEXT,
+CREATE TABLE IF NOT EXISTS "xero_extract_trackingoptions" (
+  "TrackingOptionID" TEXT,
   "Name" TEXT,
   "Status" TEXT,
   "TrackingCategoryID" TEXT
@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS "xero_extract_contacts" (
 "ContactID" TEXT,
   "Name" TEXT,
   "ContactStatus" TEXT,
-  "EmailAddress" TEXT,
   "IsSupplier" INTEGER,
   "IsCustomer" INTEGER
 );
@@ -68,6 +67,5 @@ CREATE TABLE IF NOT EXISTS "xero_extract_accounts" (
   "Name" TEXT,
   "Status" TEXT,
   "Type" TEXT,
-  "CurrencyCode" TEXT,
-  "Description" TEXT
+  "CurrencyCode" TEXT
 );

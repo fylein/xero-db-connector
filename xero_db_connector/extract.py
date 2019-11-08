@@ -3,11 +3,13 @@ XeroExtractConnector(): Connection between Xero and Database
 """
 
 import logging
-from typing import List
-
-import pandas as pd
+import sqlite3
 import time
 from os import path
+from typing import List
+import copy
+
+import pandas as pd
 
 logger = logging.getLogger('XeroExtractConnector')
 
@@ -18,6 +20,7 @@ class XeroExtractConnector:
     def __init__(self, xero, dbconn):
         self.__dbconn = dbconn
         self.__xero = xero
+        self.__dbconn.row_factory = sqlite3.Row
 
     def create_tables(self):
         """
@@ -38,36 +41,35 @@ class XeroExtractConnector:
         if not contacts:
             return []
         df_contacts = pd.DataFrame(contacts)
-        df_contacts = df_contacts[['ContactID', 'Name', 'ContactStatus', 'EmailAddress', 'IsSupplier', 'IsCustomer']]
+        df_contacts = df_contacts[['ContactID', 'Name', 'ContactStatus', 'IsSupplier', 'IsCustomer']]
         df_contacts.to_sql('xero_extract_contacts', self.__dbconn, if_exists='append', index=False)
         return df_contacts['ContactID'].to_list()
 
-    def extract_tracking_categories(self) -> List[str]:
+    def extract_trackingcategories(self) -> List[str]:
         """
         Extract tracking options from Xero
         :return: List of tracking option ids
         """
         logger.debug('extracting tracking from Xero')
-        tracking_categories = self.__xero.trackingcategories.all()
-        logger.debug('tracking_categories = %s', str(tracking_categories))
-        if not tracking_categories:
+        trackingcategories = self.__xero.trackingcategories.all()
+        logger.debug('trackingcategories = %s', str(trackingcategories))
+        if not trackingcategories:
             return []
         # tracking categories is a nested structure - so we get two flatted ones and create two tables
         tcl = []
         tol = []
-        for tc in tracking_categories:
-            options = tc['Options']
-            del tc['Options']
+        for tc in trackingcategories:
+            options = copy.deepcopy(tc['Options'])
             tcl.append(tc)
             for to in options:
                 to['TrackingCategoryID'] = tc['TrackingCategoryID']
                 tol.append(to)
         df_tcl = pd.DataFrame(tcl)
         df_tcl = df_tcl[['TrackingCategoryID', 'Name', 'Status']]
-        df_tcl.to_sql('xero_extract_tracking_categories', self.__dbconn, if_exists='append', index=False)
+        df_tcl.to_sql('xero_extract_trackingcategories', self.__dbconn, if_exists='append', index=False)
         df_tol = pd.DataFrame(tol)
         df_tol = df_tol[['TrackingOptionID', 'Name', 'Status', 'TrackingCategoryID']]
-        df_tol.to_sql('xero_extract_tracking_options', self.__dbconn, if_exists='append', index=False)
+        df_tol.to_sql('xero_extract_trackingoptions', self.__dbconn, if_exists='append', index=False)
         return df_tcl['TrackingCategoryID'].to_list()
 
     def extract_accounts(self) -> List[str]:
@@ -81,7 +83,7 @@ class XeroExtractConnector:
         if not accounts:
             return []
         df_accounts = pd.DataFrame(accounts)
-        df_accounts = df_accounts[['AccountID', 'Code', 'Name', 'Status', 'Type', 'CurrencyCode', 'Description']]
+        df_accounts = df_accounts[['AccountID', 'Code', 'Name', 'Status', 'Type', 'CurrencyCode']]
         df_accounts.to_sql('xero_extract_accounts', self.__dbconn, if_exists='append', index=False)
         return df_accounts['AccountID'].to_list()
 
@@ -131,13 +133,21 @@ class XeroExtractConnector:
                 del lit['Tracking']
                 litl.append(lit)
 
-        df_invl = pd.DataFrame(invl)
-        df_invl = df_invl[['Type', 'InvoiceID', 'InvoiceNumber', 'Reference', 'CurrencyRate', 'DateString', 'Date', 'Status', 'LineAmountTypes', 'Total', 'UpdatedDateUTC', 'CurrencyCode', 'ContactID']]
-        df_invl.to_sql('xero_extract_invoices', self.__dbconn, if_exists='append', index=False)
-        df_litl = pd.DataFrame(litl)
-        df_litl = df_litl[['LineItemID', 'InvoiceID', 'Description', 'UnitAmount', 'LineAmount', 'AccountCode', 'Quantity']]
-        df_litl.to_sql('xero_extract_invoice_lineitems', self.__dbconn, if_exists='append', index=False)
-        df_lit_trackl = pd.DataFrame(lit_trackl)
-        df_lit_trackl = df_lit_trackl[['Name', 'Option', 'TrackingCategoryID', 'TrackingOptionID', 'LineItemID']]
-        df_lit_trackl.to_sql('xero_extract_lineitem_tracking', self.__dbconn, if_exists='append', index=False)
-        return df_invl['InvoiceID'].to_list()
+        invoice_ids = []
+        if invl:
+            df_invl = pd.DataFrame(invl)
+            df_invl = df_invl[['Type', 'InvoiceID', 'InvoiceNumber', 'Reference', 'CurrencyRate', 'DateString', 'Date', 'Status', 'LineAmountTypes', 'Total', 'UpdatedDateUTC', 'CurrencyCode', 'ContactID']]
+            df_invl.to_sql('xero_extract_invoices', self.__dbconn, if_exists='append', index=False)
+            invoice_ids = df_invl['InvoiceID'].to_list()
+
+        if litl:
+            df_litl = pd.DataFrame(litl)
+            df_litl = df_litl[['LineItemID', 'InvoiceID', 'Description', 'UnitAmount', 'LineAmount', 'AccountCode', 'Quantity']]
+            df_litl.to_sql('xero_extract_invoice_lineitems', self.__dbconn, if_exists='append', index=False)
+
+        if lit_trackl:
+            df_lit_trackl = pd.DataFrame(lit_trackl)
+            df_lit_trackl = df_lit_trackl[['Name', 'Option', 'TrackingCategoryID', 'TrackingOptionID', 'LineItemID']]
+            df_lit_trackl.to_sql('xero_extract_lineitem_tracking', self.__dbconn, if_exists='append', index=False)
+
+        return invoice_ids

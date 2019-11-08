@@ -3262,6 +3262,7 @@
       },
       "CreditNotes": [],
       "CurrencyCode": "USD",
+      "CurrencyRate": "",
       "Date": "2019-10-09 00:00:00",
       "DateString": "2019-10-09",
       "DueDate": "2019-10-16 00:00:00",
@@ -3326,6 +3327,7 @@
         "UpdatedDateUTC": "2019-10-30 18:03:41.900000"
       },
       "CurrencyCode": "USD",
+      "CurrencyRate": "",
       "Date": "2019-10-09 00:00:00",
       "DateString": "2019-10-09",
       "DueDate": "2019-10-16 00:00:00",
