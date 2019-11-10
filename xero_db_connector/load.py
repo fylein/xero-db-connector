@@ -4,11 +4,9 @@ XeroLoadConnector(): Connection between Xero and Database
 
 import logging
 from os import path
-from typing import List, Generator
+from typing import Generator
 
-import pandas as pd
 import sqlite3
-import copy
 
 logger = logging.getLogger(__file__)
 
@@ -20,6 +18,7 @@ class XeroLoadConnector:
         self.__xero = xero
         self.__dbconn = dbconn
         self.__dbconn.row_factory = sqlite3.Row
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def create_tables(self):
         """
@@ -29,14 +28,14 @@ class XeroLoadConnector:
         ddlpath = path.join(basepath, 'load_ddl.sql')
         ddlsql = open(ddlpath, 'r').read()
         self.__dbconn.executescript(ddlsql)
-   
+
     def get_xero_invoice_id(self, invoice_id):
         """
         Looks up the invoice id returned by Xero using internal invoice id
         """
         rows = self.__dbconn.cursor().execute('select "XeroInvoiceID" from xero_load_invoices_mapping where "InvoiceID" = ?', (invoice_id, )).fetchone()
         if not rows:
-            return None       
+            return None
         return rows[0]
 
     def load_invoices_generator(self) -> Generator[str, None, None]:
@@ -66,10 +65,11 @@ class XeroLoadConnector:
                 del lineitem['LineItemID']
                 lineitems.append(lineitem)
             invoice['LineItems'] = lineitems
-            logger.debug('complete invoice %s', str(invoice))
+            self.logger.debug('complete invoice %s', str(invoice))
             r = self.__xero.invoices.save(invoice)[0]
-            logger.debug('return object %s', str(r))
+            self.logger.debug('return object %s', str(r))
             xero_invoice_id = r['InvoiceID']
             self.__dbconn.cursor().execute('insert into xero_load_invoices_mapping("InvoiceID", "XeroInvoiceID") values(?, ?)', (invoice_id, xero_invoice_id,))
             self.__dbconn.commit()
+            self.logger.info('Loaded invoice = %s, xero_invoice_id = %s', invoice_id, xero_invoice_id)
             yield invoice_id

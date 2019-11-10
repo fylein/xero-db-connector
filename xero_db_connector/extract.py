@@ -11,8 +11,6 @@ import copy
 
 import pandas as pd
 
-logger = logging.getLogger('XeroExtractConnector')
-
 class XeroExtractConnector:
     """
     - Extract Data from Xero and load to Database
@@ -21,6 +19,7 @@ class XeroExtractConnector:
         self.__dbconn = dbconn
         self.__xero = xero
         self.__dbconn.row_factory = sqlite3.Row
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def create_tables(self):
         """
@@ -36,13 +35,16 @@ class XeroExtractConnector:
         Extract contacts from Xero
         :return: List of contact ids
         """
-        logger.debug('extracting contacts from Xero')
+        self.logger.debug('extracting contacts from Xero')
         contacts = self.__xero.contacts.all()
         if not contacts:
+            self.logger.info('Extracted 0 contacts')
             return []
         df_contacts = pd.DataFrame(contacts)
         df_contacts = df_contacts[['ContactID', 'Name', 'ContactStatus', 'IsSupplier', 'IsCustomer']]
         df_contacts.to_sql('xero_extract_contacts', self.__dbconn, if_exists='append', index=False)
+
+        self.logger.info('Extracted %d contacts', len(df_contacts))
         return df_contacts['ContactID'].to_list()
 
     def extract_trackingcategories(self) -> List[str]:
@@ -50,10 +52,11 @@ class XeroExtractConnector:
         Extract tracking options from Xero
         :return: List of tracking option ids
         """
-        logger.debug('extracting tracking from Xero')
+        self.logger.debug('extracting tracking from Xero')
         trackingcategories = self.__xero.trackingcategories.all()
-        logger.debug('trackingcategories = %s', str(trackingcategories))
+        self.logger.debug('trackingcategories = %s', str(trackingcategories))
         if not trackingcategories:
+            self.logger.info('Extracted 0 trackingcategories and 0 trackingoptions')
             return []
         # tracking categories is a nested structure - so we get two flatted ones and create two tables
         tcl = []
@@ -70,6 +73,7 @@ class XeroExtractConnector:
         df_tol = pd.DataFrame(tol)
         df_tol = df_tol[['TrackingOptionID', 'Name', 'Status', 'TrackingCategoryID']]
         df_tol.to_sql('xero_extract_trackingoptions', self.__dbconn, if_exists='append', index=False)
+        self.logger.info('Extracted %d trackingcategories and %d trackingoptions', len(df_tcl), len(df_tol))
         return df_tcl['TrackingCategoryID'].to_list()
 
     def extract_accounts(self) -> List[str]:
@@ -77,14 +81,16 @@ class XeroExtractConnector:
         Extract accounts from Xero
         :return: List of account ids
         """
-        logger.debug('extracting accounts from Xero')
+        self.logger.debug('extracting accounts from Xero')
         accounts = self.__xero.accounts.all()
-        logger.debug('accounts = %s', str(accounts))
+        self.logger.debug('accounts = %s', str(accounts))
         if not accounts:
+            self.logger.info('Extracted 0 accounts')
             return []
         df_accounts = pd.DataFrame(accounts)
         df_accounts = df_accounts[['AccountID', 'Code', 'Name', 'Status', 'Type', 'CurrencyCode']]
         df_accounts.to_sql('xero_extract_accounts', self.__dbconn, if_exists='append', index=False)
+        self.logger.info('Extracted %d accounts', len(df_accounts))
         return df_accounts['AccountID'].to_list()
 
     def extract_invoices(self, page=None) -> List[str]:
@@ -92,10 +98,11 @@ class XeroExtractConnector:
         Extract invoicess from Xero
         :return: List of invoice ids
         """
-        logger.debug('extracting invoices from Xero')
+        self.logger.debug('extracting invoices from Xero')
         invoices = self.__xero.invoices.filter(page=page)
-        logger.debug('invoices = %s', str(invoices))
+        self.logger.debug('invoices = %s', str(invoices))
         if not invoices:
+            self.logger.info('Extracted 0 invoices')
             return []
         # invoices is a nested structure - so we to denormalize
         invl = []
@@ -109,9 +116,6 @@ class XeroExtractConnector:
             del inv['LineItems']
             inv['ContactID'] = contact_id
             invl.append(inv)
-       
-        # temp
-        # invl = invl[0:10]
 
         # retrieve lineitems by going after individual invoices. lineitems have tracking info that needs
         # to be denormalized as well
@@ -121,7 +125,7 @@ class XeroExtractConnector:
             # Xero will throttle calls here - so keep a sleep in between
             time.sleep(1)
             inv_detailed = self.__xero.invoices.get(inv['InvoiceID'])[0]
-            logger.debug('detailed invoice %s', str(inv_detailed))
+            self.logger.debug('detailed invoice %s', str(inv_detailed))
             lits = inv_detailed['LineItems']
             for lit in lits:
                 lit['InvoiceID'] = inv['InvoiceID']
@@ -150,4 +154,5 @@ class XeroExtractConnector:
             df_lit_trackl = df_lit_trackl[['Name', 'Option', 'TrackingCategoryID', 'TrackingOptionID', 'LineItemID']]
             df_lit_trackl.to_sql('xero_extract_lineitem_tracking', self.__dbconn, if_exists='append', index=False)
 
+        self.logger.info('Extracted %d invoices %d lineitems', len(df_invl), len(litl))
         return invoice_ids
