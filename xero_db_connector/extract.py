@@ -107,14 +107,13 @@ class XeroExtractConnector:
         # invoices is a nested structure - so we to denormalize
         invl = []
         for inv in invoices:
-            contact_id = inv['Contact']['ContactID']
+            inv['ContactID'] = inv['Contact']['ContactID']
             del inv['Payments']
             del inv['CreditNotes']
             del inv['Contact']
             del inv['Prepayments']
             del inv['Overpayments']
             del inv['LineItems']
-            inv['ContactID'] = contact_id
             invl.append(inv)
 
         # retrieve lineitems by going after individual invoices. lineitems have tracking info that needs
