@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS "xero_extract_tracking_categories";
-DROP TABLE IF EXISTS "xero_extract_tracking_options";
+DROP TABLE IF EXISTS "xero_extract_trackingcategories";
+DROP TABLE IF EXISTS "xero_extract_trackingoptions";
 DROP TABLE IF EXISTS "xero_extract_contacts";
 DROP TABLE IF EXISTS "xero_extract_invoices";
 DROP TABLE IF EXISTS "xero_extract_invoice_lineitems";
@@ -7,32 +7,31 @@ DROP TABLE IF EXISTS "xero_extract_lineitem_tracking";
 DROP TABLE IF EXISTS "xero_extract_accounts";
 
 CREATE TABLE IF NOT EXISTS "xero_extract_trackingcategories" (
-  "Name" TEXT,
+  "Name" TEXT not null unique,
   "Status" TEXT,
-  "TrackingCategoryID" TEXT
+  "TrackingCategoryID" TEXT not null unique
 );
 
 CREATE TABLE IF NOT EXISTS "xero_extract_trackingoptions" (
-  "TrackingOptionID" TEXT,
+  "TrackingOptionID" TEXT not null unique,
   "Name" TEXT,
   "Status" TEXT,
   "TrackingCategoryID" TEXT
 );
 
 CREATE TABLE IF NOT EXISTS "xero_extract_contacts" (
-"ContactID" TEXT,
-  "Name" TEXT,
+  "ContactID" TEXT not null unique,
+  "Name" TEXT not null unique,
   "ContactStatus" TEXT,
   "IsSupplier" INTEGER,
   "IsCustomer" INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS "xero_extract_invoices" (
-"Type" TEXT,
-  "InvoiceID" TEXT,
+  "Type" TEXT,
+  "InvoiceID" TEXT not null unique,
   "InvoiceNumber" TEXT,
   "Reference" TEXT,
-  "CurrencyRate" REAL,
   "Date" TIMESTAMP,
   "Status" TEXT,
   "LineAmountTypes" TEXT,
@@ -43,8 +42,8 @@ CREATE TABLE IF NOT EXISTS "xero_extract_invoices" (
 );
 
 CREATE TABLE IF NOT EXISTS "xero_extract_invoice_lineitems" (
-  "LineItemID" TEXT,
-  "InvoiceID" TEXT,
+  "LineItemID" TEXT not null unique,
+  "InvoiceID" TEXT not null,
   "Description" TEXT,
   "UnitAmount" REAL,
   "LineAmount" REAL,
@@ -53,7 +52,7 @@ CREATE TABLE IF NOT EXISTS "xero_extract_invoice_lineitems" (
 );
 
 CREATE TABLE IF NOT EXISTS "xero_extract_lineitem_tracking" (
-"Name" TEXT,
+  "Name" TEXT,
   "Option" TEXT,
   "TrackingCategoryID" TEXT,
   "TrackingOptionID" TEXT,
@@ -61,8 +60,8 @@ CREATE TABLE IF NOT EXISTS "xero_extract_lineitem_tracking" (
 );
 
 CREATE TABLE IF NOT EXISTS "xero_extract_accounts" (
-"AccountID" TEXT,
-  "Code" TEXT,
+  "AccountID" TEXT not null unique,
+  "Code" TEXT not null unique,
   "Name" TEXT,
   "Status" TEXT,
   "Type" TEXT,
