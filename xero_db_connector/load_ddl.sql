@@ -1,21 +1,15 @@
 DROP TABLE IF EXISTS "xero_load_invoices";
 
 CREATE TABLE IF NOT EXISTS "xero_load_invoices" (
-  "Type" TEXT,
-  "InvoiceID" TEXT,
+  "Type" TEXT not null,
+  "InvoiceID" TEXT unique,
   "InvoiceNumber" TEXT,
-  "Date" DATE, -- YYYY-MM-DD e.g. 2019-01-01
+  "Date" DATE not null, -- YYYY-MM-DD e.g. 2019-01-01
   "Status" TEXT,
-  "Total" REAL,
+  "Total" REAL not null,
   "CurrencyCode" TEXT,
-  "ContactID" TEXT
-);
-
-DROP TABLE IF EXISTS "xero_load_invoices_mapping";
-
-CREATE TABLE IF NOT EXISTS "xero_load_invoices_mapping" (
-  "InvoiceID" TEXT,
-  "XeroInvoiceID" TEXT -- this is what is returned by Xero
+  "ContactID" TEXT not null,
+  "XeroInvoiceID" TEXT unique
 );
 
 DROP TABLE IF EXISTS "xero_load_invoice_lineitems";
