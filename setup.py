@@ -9,7 +9,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='xero-db-connector',
-    version='0.3.3',
+    version='0.3.4',
     author='Siva Narayanan',
     author_email='siva@fyle.in',
     description='Connects Xero to a database connector to transfer information to and fro.',
