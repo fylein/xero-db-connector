@@ -1,4 +1,7 @@
 # Xero Database Connector
+
+*Warning*: This project is undergoing active development and is not yet production-grade. Please mail the author if you want to find out more
+
 Connects Xero to a database to transfer information to and fro.
 
 ## Installation
@@ -51,8 +54,8 @@ x.extract_tracking_categories()
 x.extract_accounts()
 
 # do some transformations and populated invoice tables xero_load_invoices and xero_load_invoice_lineitems
-for invoice_id in y.load_invoices_generator():
-    xero_invoice_id = y.get_xero_invoice_id(invoice_id=invoice_id)
+for invoice_id in y.get_invoice_ids():
+    xero_invoice_id = y.load_invoice(invoice_id=invoice_id)
     print(f'posted invoice {invoice_id} for which xero returned {xero_invoice_id}')
 ```
 
